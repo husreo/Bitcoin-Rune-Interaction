@@ -1,0 +1,48 @@
+version: "3"
+services:
+  db:
+    restart: always
+    image: postgres:13-alpine
+    ports:
+      - "127.0.0.1:5435:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DATABASE=data
+    volumes:
+      - data:/var/lib/postgresql/data
+  redis:
+    restart: always
+    image: bitnami/redis:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data:/bitnami/redis/data
+    ports:
+      - "6379:6379"
+  listener:
+    build:
+      context: .
+      dockerfile: Dockerfile.listener
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/data?schema=public
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    command: ["npm", "run", "listen"]
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/data?schema=public
+      - BACKEND_URL=http://listener:8080
+    command: ["npm", "run", "start"]
+    ports:
+      - "3000:3000"
+
+volumes:
+  data:
+  redis_data:
