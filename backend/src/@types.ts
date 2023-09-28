@@ -32,3 +32,15 @@ export interface Vout {
 export interface Status {
   confirmed: boolean;
 }
+
+export interface BlockDetails {
+  blockId: string;
+  blockTimestamp: string;
+  blockHeight: number;
+}
+
+export interface GetBlockResponse {
+  id: string;
+  timestamp: string;
+  height: number;
+}

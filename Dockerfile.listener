@@ -10,4 +10,4 @@ COPY . /app/
 
 RUN npx prisma generate
 
-CMD ["npx", "ts-node", "src/listen.ts"]
+CMD ["npm", "run", "backend"]

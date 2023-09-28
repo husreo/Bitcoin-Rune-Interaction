@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "listen": "npx ts-node --project scripts/tsconfig.json scripts/main.ts"
+    "backend": "npx ts-node --project backend/tsconfig.json backend/src/main.ts",
+    "build:backend": "npx tsc --project backend/tsconfig.json backend/src/main.ts"
   },
   "dependencies": {
     "@mempool/mempool.js": "^2.3.0",
@@ -23,6 +24,7 @@
     "bitcoinjs-lib": "^6.1.5",
     "bullmq": "^4.11.4",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "envalid": "^8.0.0",
     "eslint": "8.50.0",
     "eslint-config-next": "13.5.3",
