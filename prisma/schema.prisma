@@ -17,4 +17,5 @@ model Transaction {
   createdAt      DateTime @default(now())
   blockTimestamp String   @default("")
   blockNumber    String   @default("")
+  blockHeight    Int      @default(-1)
 }

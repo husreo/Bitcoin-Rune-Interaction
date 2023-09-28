@@ -1,5 +1,4 @@
 import { Transaction } from "@prisma/client";
-import { useReactTable } from "@tanstack/react-table";
 import Link from "next/link";
 import React from "react";
 
@@ -21,10 +20,6 @@ function convertTransfersToTuple(transfers: Transfer[]) {
 }
 
 const Table = ({ transactions }: Props) => {
-  const table = useReactTable({
-    columns: {},
-  });
-
   return (
     <table className="table-auto border-collapse border border-slate-500 p-3">
       <thead>

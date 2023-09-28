@@ -30,11 +30,12 @@ export const taskWorker = new Worker(
 interface BlockDetails {
   blockId: string;
   blockTimestamp: string;
+  blockHeight: number;
 }
 
 export async function extractAndStoreTx(
   tx: Tx,
-  { blockId, blockTimestamp }: BlockDetails
+  { blockId, blockTimestamp, blockHeight }: BlockDetails
 ): Promise<number> {
   let count = 0;
   for (const out of tx.vout) {
@@ -50,6 +51,7 @@ export async function extractAndStoreTx(
           transfers: result.transfers,
           blockNumber: blockId,
           blockTimestamp: blockTimestamp.toString(),
+          blockHeight,
         },
         update: {},
       });
@@ -78,6 +80,7 @@ export async function getBlockTransactions(blockId: string) {
     const numOfValidTxs = await extractAndStoreTx(tx, {
       blockId: block.id,
       blockTimestamp: block.timestamp,
+      blockHeight: block.height,
     });
     blockValidTxCount += numOfValidTxs;
   }
@@ -110,19 +113,20 @@ export const init = async () => {
 
 export async function getBlock(
   blockId: string
-): Promise<{ id: string; timestamp: string }> {
+): Promise<{ id: string; timestamp: string; height: number }> {
   const response = await axios.get(
     `https://mempool.space/api/v1/block/${blockId}`
   );
-  const { id, timestamp } = response.data;
-  return { id, timestamp };
+  const { id, timestamp, height } = response.data;
+  return { id, timestamp, height };
 }
 
 export async function checkValid(tx: string) {
   const response = await axios.get(`https://mempool.space/api/tx/${tx}`);
   await extractAndStoreTx(response.data, {
-    blockId: response.data.status.block_hash,
-    blockTimestamp: response.data.status.block_time,
+    blockId: response.data?.status?.block_hash,
+    blockTimestamp: response.data?.status?.block_time,
+    blockHeight: response.data?.status?.block_height,
   });
   return prisma.transaction.findFirst({ where: { id: tx } });
 }

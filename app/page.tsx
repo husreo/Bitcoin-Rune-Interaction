@@ -1,20 +1,11 @@
 "use server";
-import Link from "next/link";
 import Search from "../components/Search";
 import { Transaction } from "@prisma/client";
 import axios from "axios";
 import Table from "../components/Table";
+import Table2 from "../components/Table2";
 
 const backendURL = process.env.BACKEND_URL;
-
-async function getTransactions(): Promise<Transaction[]> {
-  try {
-    const response = await axios.get(`${backendURL}/tx`);
-    return response.data;
-  } catch (e) {
-    return [];
-  }
-}
 
 async function getOneTransaction(txId: string): Promise<Transaction | null> {
   try {
@@ -26,7 +17,6 @@ async function getOneTransaction(txId: string): Promise<Transaction | null> {
 }
 
 export default async function Home({ searchParams }: { searchParams: any }) {
-  let transactions = await getTransactions();
   let searchTransaction: Transaction | null = null;
   let isError = false;
 
@@ -59,7 +49,7 @@ export default async function Home({ searchParams }: { searchParams: any }) {
         <h1 className="text-3xl mb-4 text-center">
           Recent Transactions / Issuances
         </h1>
-        <Table transactions={transactions} />
+        <Table2 />
       </div>
     </main>
   );
